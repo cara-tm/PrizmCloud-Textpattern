@@ -1,0 +1,52 @@
+# pzc_prizm_document_viewer v1.0
+# Prizm Cloud is a document viewer that enables you to display hundreds of different kinds of files on your website without worrying about whether your visitors have the software to view them and without installing any additional hardware or software. The document files stay on your server, so you can update, edit and change them anytime. Prizm Cloud supports more than 300 file types, including DOC, PDF, PPT, XLS and CAD.
+# Accusoft
+# http://www.accusoft.com
+
+# ......................................................................
+# This is a plugin for Textpattern - http://textpattern.com/
+# To install: textpattern > admin > plugins
+# Paste the following text into the 'Install plugin' box:
+# ......................................................................
+
+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
