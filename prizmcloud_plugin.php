@@ -73,49 +73,7 @@ function pzc_append_button($event, $step, $data, $rs)
 {
 	$js = pzc_script();
 	$button = '<input type="button" value="Insert Prizm Cloud Document Viewer" onclick="pzc_show_form()">';
-	$form = '<div style="display: none;">
-		<div id="pzc-form" title="Prizm Cloud Document Viewer">
-			<table>
-				<tr>
-					<td align="right"><strong>Key:</strong></td>
-					<td valign="top"><input name="licenseKey" type="text" id="licenseKey" /></td>
-				</tr>
-				<tr>
-					<td align="right"><strong>Document URL:</strong></td>
-					<td valign="top"><input name="viewerDocument" type="text" id="viewerDocument" size="40" /></td>
-				</tr>
-				<tr>
-					<td align="right"><strong>Viewer Type:</strong></td>
-					<td valign="top">
-						<input type="radio" value="flash" name="viewerType" checked="checked" /> <span>Flash</span>
-						<input type="radio" value="html5" name="viewerType" /> <span>HTML5</span>
-					</td>
-				</tr>
-				<tr>
-					<td align="right"><strong>Viewer Width:</strong></td>
-					<td valign="top"><input name="viewerWidth" type="text" id="viewerWidth" size="6" value="600" />px</td>
-				</tr>
-				<tr>
-					<td align="right"><strong>Viewer Height:</strong></td>
-					<td valign="top"><input name="viewerHeight" type="text" id="viewerHeight" size="6" value="800" />px</td>
-				</tr>
-				<tr>
-					<td align="right"><strong>Print Button:</strong></td>
-					<td valign="top">
-						<input type="radio" name="viewerPrintButton" value="Yes" checked="checked" /> <span>Yes</span>
-						<input type="radio" name="viewerPrintButton" value="No" /> <span>No</span>
-					</td>
-				</tr>
-				<tr>
-					<td align="right"><strong>Toolbar Color:</strong></td>
-					<td valign="top">
-						<input type="text" id="viewerToolbarColor" name="viewerToolbarColor" value="#CCCCCC" class="color" />
-					</td>
-				</tr>
-			</table>
-		</div>
-	</div>';
-	$output_result = isset($rs['url_title']) ? "<br/>\r\n". $js."\r\n".$button."\r\n".$form."\r\n" : '';
+	$output_result = isset($rs['url_title']) ? "<br/>\r\n". $js."\r\n".$button."\r\n" : '';
 	return $data.$output_result;
 }
 
@@ -141,11 +99,13 @@ function pzc_script()
 	}
 	function pzc_show_form()
 	{
+		jQuery("<div style=\"display: none;\"><div id=\"pzc-form\" title=\"Prizm Cloud Document Viewer\"><table><tr><td align=\"right\"><strong>Key:</strong></td><td valign=\"top\"><input name=\"licenseKey\" type=\"text\" id=\"licenseKey\" /></td></tr><tr><td align=\"right\"><strong>Document URL:</strong></td><td valign=\"top\"><input name=\"viewerDocument\" type=\"text\" id=\"viewerDocument\" size=\"40\" /></td></tr><tr><td align=\"right\"><strong>Viewer Type:</strong></td><td valign=\"top\"><input type=\"radio\" value=\"flash\" name=\"viewerType\" checked=\"checked\" /> <span>Flash</span><input type=\"radio\" value=\"html5\" name=\"viewerType\" /> <span>HTML5</span></td></tr><tr><td align=\"right\"><strong>Viewer Width:</strong></td><td valign=\"top\"><input name=\"viewerWidth\" type=\"text\" id=\"viewerWidth\" size=\"6\" value=\"600\" />px</td></tr><tr><td align=\"right\"><strong>Viewer Height:</strong></td><td valign=\"top\"><input name=\"viewerHeight\" type=\"text\" id=\"viewerHeight\" size=\"6\" value=\"800\" />px</td></tr><tr><td align=\"right\"><strong>Print Button:</strong></td><td valign=\"top\"><input type=\"radio\" name=\"viewerPrintButton\" value=\"Yes\" checked=\"checked\" /> <span>Yes</span><input type=\"radio\" name=\"viewerPrintButton\" value=\"No\" /> <span>No</span></td></tr><tr><td align=\"right\"><strong>Toolbar Color:</strong></td><td valign=\"top\"><input type=\"text\" id=\"viewerToolbarColor\" name=\"viewerToolbarColor\" value=\"#CCCCCC\" class=\"color\" /></td></tr></table></div></div>").appendTo("body");
 		jQuery("#pzc-form").dialog({ width: 450, buttons: { "Add Viewer": pzc_add_viewer, "Cancel": pzc_hide_form } });
 	}
 	function pzc_hide_form()
 	{
 		jQuery("#pzc-form").dialog("close");
+		jQuery("#pzc-form").remove();
 	}
 	function pzc_add_viewer()
 	{
@@ -166,10 +126,10 @@ function pzc_script()
 		var iframeHeight = viewerHeight + 20;
 		
 		var viewerCode = "<iframe src=\"http://connect.ajaxdocumentviewer.com/?key="+licenseKey+"&viewertype="+viewerType+"&document="+viewerDocument+"&viewerheight="+viewerHeight+"&viewerwidth="+viewerWidth+"&printButton="+viewerPrintButton+"&toolbarColor="+viewerToolbarColor+"&integration=Textpattern\" width=\""+iframeWidth+"\" height=\""+iframeHeight+"\"></iframe>";
-
+		
 		// insert in the end of <textarea id="body">
-		var contentBody = jQuery("textarea#body").html() + viewerCode;
-		jQuery("textarea#body").html(contentBody);
+		var contentBody = jQuery("textarea#body").val() + viewerCode;
+		jQuery("textarea#body").val(contentBody);
 		
 		pzc_hide_form();
 	}
