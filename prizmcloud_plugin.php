@@ -55,7 +55,7 @@ if (!defined('txpinterface'))
 * Description: Prizm Cloud enables you to offer high-speed document viewing without worrying about additional hardware or installing software.  The documents stay on your servers, so you can delete, update, edit and change them anytime. We don't keep copies of your documents, so they are always secure!
 * Author: Accusoft <prizmcloud@accusoft.com>
 * Author URI: http://www.accusoft.com/
-* Version: 1.0.0
+* Version: 1.0.1
 *
 * By default: Textpattern doesn't have WYSIWYG Editor (ex.: TinyMCE), means that you will be seeing
 * only <iframe> tag while editing page. See results in "Article preview" or your site.
@@ -64,8 +64,11 @@ if (!defined('txpinterface'))
 // admin user only
 if (@txpinterface == 'admin')
 {
-    add_privs('article', '1'); // Publishers only
-    register_callback('pzc_append_button', 'article_ui', 'title');
+	add_privs('pzc_prizm_document_viewer.attach', '1,2,3');
+	if (has_privs('pzc_prizm_document_viewer.attach'))
+	{
+		register_callback('pzc_append_button', 'article_ui', 'title');
+	}
 }
 
 // Prizm Cloud Viewer Button
