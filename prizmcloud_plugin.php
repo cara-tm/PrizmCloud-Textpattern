@@ -50,8 +50,8 @@ if (!defined('txpinterface'))
 
 # --- BEGIN PLUGIN CODE ---
 /**
-* Prizm Cloud Embedded Document Viewer v1.0
-* Plugin URI: http://prizmcloud.accusoft.com/
+* Prizm Cloud Embedded Document Viewer v1.3
+* Plugin URI: http://www.prizmcloud.com/
 * Description: Prizm Cloud enables you to offer high-speed document viewing without worrying about additional hardware or installing software.  The documents stay on your servers, so you can delete, update, edit and change them anytime. We don't keep copies of your documents, so they are always secure!
 * Author: Accusoft <prizmcloud@accusoft.com>
 * Author URI: http://www.accusoft.com/
@@ -74,10 +74,134 @@ if (@txpinterface == 'admin')
 // Prizm Cloud Viewer Button
 function pzc_append_button($event, $step, $data, $rs)
 {
-	$js = pzc_script();
-	$button = '<input type="button" value="Insert Prizm Cloud Document Viewer" onclick="pzc_show_form()">';
-	$output_result = isset($rs['url_title']) ? "<br/>\r\n". $js."\r\n".$button."\r\n" : '';
+	$button = '<a href="javascript:pzc_show_form()" class="navlink">Prizm Cloud Document Viewer</a>';
+	$output_result = pzc_script()."\r\n".$button."\r\n";
 	return $data.$output_result;
+}
+
+// Prizm Cloud Form
+function pzc_form()
+{
+	$formHTML = "<div id=\"pzc-form\" title=\"Prizm Cloud Document Viewer\">
+		<table>
+			<tr>
+				<td align=\"right\"><strong>Key:</strong></td>
+				<td valign=\"top\"><input name=\"licenseKey\" type=\"text\" id=\"licenseKey\" /></td>
+			</tr>
+			<tr>
+				<td align=\"right\"><strong>Document URL:</strong></td>
+				<td valign=\"top\"><input name=\"viewerDocument\" type=\"text\" id=\"viewerDocument\" size=\"40\" /></td>
+			</tr>
+			<tr>
+				<td align=\"right\"><strong>Viewer Type:</strong></td>
+				<td valign=\"top\">
+					<input type=\"radio\" value=\"html5\" name=\"viewerType\" onclick=\"javascript:pcSettings(this.value)\" checked=\"checked\" /> <span>HTML5</span>
+					<input type=\"radio\" value=\"flash\" name=\"viewerType\" onclick=\"javascript:pcSettings(this.value)\" /> <span>Flash</span>
+					<input type=\"radio\" value=\"slideshow\" name=\"viewerType\" onclick=\"javascript:pcSettings(this.value)\" /> <span>Slideshow</span>
+				</td>
+			</tr>
+			<tr>
+				<td align=\"right\"><strong>Viewer Width:</strong></td>
+				<td valign=\"top\"><input name=\"viewerWidth\" type=\"text\" id=\"viewerWidth\" size=\"6\" value=\"600\" />px</td>
+			</tr>
+			<tr>
+				<td align=\"right\"><strong>Viewer Height:</strong></td>
+				<td valign=\"top\"><input name=\"viewerHeight\" type=\"text\" id=\"viewerHeight\" size=\"6\" value=\"800\" />px</td>
+			</tr>
+		</table>
+		<div id=\"documentViewer\" style=\"display: block;\">
+			<table>
+				<tr>
+					<td align=\"right\"><strong>Print Button:</strong></td>
+					<td valign=\"top\">
+						<input type=\"radio\" name=\"viewerPrintButton\" value=\"Yes\" checked=\"checked\" /> <span>Yes</span>
+						<input type=\"radio\" name=\"viewerPrintButton\" value=\"No\" /> <span>No</span>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\"><strong>Toolbar Color:</strong></td>
+					<td valign=\"top\"><input type=\"text\" id=\"viewerToolbarColor\" name=\"viewerToolbarColor\" value=\"#CCCCCC\" class=\"color\" /></td>
+				</tr>
+			</table>
+		</div>
+		<div id=\"slideshowViewer\" style=\"display: none;\">
+			<table>
+				<tr>
+					<td align=\"right\" class=\"gray dwl_gray\"><strong>Animation Type:</strong></td>
+					<td valign=\"top\">
+						<select id=\"viewerAnimType\" name=\"viewerAnimType\">
+						<option value=\"slide\">Slide</option>
+						<option value=\"fade\">Fade</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\" valign=\"top\" class=\"gray dwl_gray\"><strong>Animation Duration:</strong></td>
+					<td valign=\"top\">
+						<input type=\"text\" id=\"viewerAnimDuration\" name=\"viewerAnimDuration\" value=\"450\" /><br /><em>(Note: # in milliseconds)</em>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\" valign=\"top\" class=\"gray dwl_gray\"><strong>Animation Speed:</strong></td>
+					<td valign=\"top\">
+						<input type=\"text\" id=\"viewerAnimSpeed\" name=\"viewerAnimSpeed\" value=\"4000\" /><br /><em>(Note: # in milliseconds)</em>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\" class=\"gray dwl_gray\"><strong>Start Automatically:</strong></td>
+					<td valign=\"top\">
+						<select id=\"viewerAutomatic\" name=\"viewerAutomatic\">
+						<option value=\"yes\">Yes</option>
+						<option value=\"no\">No</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\" class=\"gray dwl_gray\"><strong>Show Controls:</strong></td>
+					<td valign=\"top\">
+						<select id=\"viewerShowControls\" name=\"viewerShowControls\">
+						<option value=\"yes\">Yes</option>
+						<option value=\"no\">No</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\" class=\"gray dwl_gray\"><strong>Center Controls: (if shown)</strong></td>
+					<td valign=\"top\">
+						<select id=\"viewerCenterControls\" name=\"viewerCenterControls\">
+						<option value=\"yes\">Yes</option>
+						<option value=\"no\">No</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\" class=\"gray dwl_gray\"><strong>Allow Keyboard Navigation:</strong></td>
+					<td valign=\"top\">
+						<select id=\"viewerKeyboardNav\" name=\"viewerKeyboardNav\">
+						<option value=\"yes\">Yes</option>
+						<option value=\"no\">No</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align=\"right\" class=\"gray dwl_gray\"><strong>Pause on Hover:</strong></td>
+					<td valign=\"top\">
+						<select id=\"viewerHoverPause\" name=\"viewerHoverPause\">
+						<option value=\"yes\">Yes</option>
+						<option value=\"no\">No</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>";
+	
+	$formHTML = str_replace("\r","",$formHTML);
+	$formHTML = str_replace("\n","",$formHTML);
+	$formHTML = str_replace("\t","",$formHTML);
+	$formHTML = str_replace('"','\"',$formHTML);
+	
+	return $formHTML;
 }
 
 // Prizm Cloud JavaScript
@@ -102,8 +226,21 @@ function pzc_script()
 	}
 	function pzc_show_form()
 	{
-		jQuery("<div style=\"display: none;\"><div id=\"pzc-form\" title=\"Prizm Cloud Document Viewer\"><table><tr><td align=\"right\"><strong>Key:</strong></td><td valign=\"top\"><input name=\"licenseKey\" type=\"text\" id=\"licenseKey\" /></td></tr><tr><td align=\"right\"><strong>Document URL:</strong></td><td valign=\"top\"><input name=\"viewerDocument\" type=\"text\" id=\"viewerDocument\" size=\"40\" /></td></tr><tr><td align=\"right\"><strong>Viewer Type:</strong></td><td valign=\"top\"><input type=\"radio\" value=\"flash\" name=\"viewerType\" checked=\"checked\" /> <span>Flash</span><input type=\"radio\" value=\"html5\" name=\"viewerType\" /> <span>HTML5</span></td></tr><tr><td align=\"right\"><strong>Viewer Width:</strong></td><td valign=\"top\"><input name=\"viewerWidth\" type=\"text\" id=\"viewerWidth\" size=\"6\" value=\"600\" />px</td></tr><tr><td align=\"right\"><strong>Viewer Height:</strong></td><td valign=\"top\"><input name=\"viewerHeight\" type=\"text\" id=\"viewerHeight\" size=\"6\" value=\"800\" />px</td></tr><tr><td align=\"right\"><strong>Print Button:</strong></td><td valign=\"top\"><input type=\"radio\" name=\"viewerPrintButton\" value=\"Yes\" checked=\"checked\" /> <span>Yes</span><input type=\"radio\" name=\"viewerPrintButton\" value=\"No\" /> <span>No</span></td></tr><tr><td align=\"right\"><strong>Toolbar Color:</strong></td><td valign=\"top\"><input type=\"text\" id=\"viewerToolbarColor\" name=\"viewerToolbarColor\" value=\"#CCCCCC\" class=\"color\" /></td></tr></table></div></div>").appendTo("body");
+		jQuery("<div style=\"display: none;\">'.pzc_form().'</div>").appendTo("body");
 		jQuery("#pzc-form").dialog({ width: 450, buttons: { "Add Viewer": pzc_add_viewer, "Cancel": pzc_hide_form } });
+	}
+	function pcSettings(viewerType)
+	{
+		if (viewerType == "slideshow")
+		{
+			jQuery("#slideshowViewer").css("display", "block");
+			jQuery("#documentViewer").css("display", "none");
+		}
+		else
+		{
+			jQuery("#slideshowViewer").css("display", "none");
+			jQuery("#documentViewer").css("display", "block");
+		}
 	}
 	function pzc_hide_form()
 	{
@@ -125,10 +262,32 @@ function pzc_script()
 		if (viewerToolbarColor.length == 0) { viewerToolbarColor = "CCCCCC"; }
 		viewerToolbarColor = viewerToolbarColor.replace("#","");
 		
-		var iframeWidth = viewerWidth + 20;
-		var iframeHeight = viewerHeight + 20;
+		var animType = jQuery("#pzc-form").find("#viewerAnimType").val();
+		var animDuration = jQuery("#pzc-form").find("#viewerAnimDuration").val();
+		if (!isInt(animDuration)) { animDuration = 450; }
+		var animSpeed = jQuery("#pzc-form").find("#viewerAnimSpeed").val();
+		if (!isInt(animSpeed)) { animSpeed = 5000; }
+		var automatic = jQuery("#pzc-form").find("#viewerAutomatic").val();
+		var showControls = jQuery("#pzc-form").find("#viewerShowControls").val();
+		var centerControls = jQuery("#pzc-form").find("#viewerCenterControls").val();
+		var keyboardNav = jQuery("#pzc-form").find("#viewerKeyboardNav").val();
+		var hoverPause = jQuery("#pzc-form").find("#viewerHoverPause").val();
 		
-		var viewerCode = "<iframe src=\"http://connect.ajaxdocumentviewer.com/?key="+licenseKey+"&viewertype="+viewerType+"&document="+viewerDocument+"&viewerheight="+viewerHeight+"&viewerwidth="+viewerWidth+"&printButton="+viewerPrintButton+"&toolbarColor="+viewerToolbarColor+"&integration=Textpattern\" width=\""+iframeWidth+"\" height=\""+iframeHeight+"\"></iframe>";
+		var iframeWidth = viewerWidth + 20;
+		var iframeHeight = viewerHeight + 40;
+		
+		var pzc_url = "//connect.ajaxdocumentviewer.com/?key="+licenseKey+"&amp;viewertype="+viewerType+"&amp;document="+encodeURIComponent(viewerDocument)+"&amp;viewerheight="+viewerHeight+"&amp;viewerwidth="+viewerWidth;
+		if (viewerType == "slideshow")
+		{
+			pzc_url += "&amp;animtype=" + animType + "&amp;animduration=" + animDuration + "&amp;animspeed=" + animSpeed + "&amp;automatic=" + automatic + "&amp;showcontrols=" + showControls + "&amp;centercontrols=" + centerControls + "&amp;keyboardnav=" + keyboardNav + "&amp;hoverpause=" + hoverPause;
+		}
+		else
+		{
+			pzc_url += "&amp;printButton="+viewerPrintButton+"&amp;toolbarColor="+viewerToolbarColor;
+		}
+		pzc_url += "&amp;integration=Textpattern";
+		
+		var viewerCode = "\\n <iframe src=\""+pzc_url+"\" width=\""+iframeWidth+"\" height=\""+iframeHeight+"\"></iframe>";
 		
 		// insert in the end of <textarea id="body">
 		var contentBody = jQuery("textarea#body").val() + viewerCode;
